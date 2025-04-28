@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Store email opens in memory
+// Memory to store open events
 const opens = [];
 
 // 1x1 transparent pixel
@@ -11,7 +11,7 @@ const pixel = Buffer.from(
   'base64'
 );
 
-// Tracking endpoint
+// Tracking route
 app.get('/track', (req, res) => {
   const now = new Date();
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -20,13 +20,13 @@ app.get('/track', (req, res) => {
 
   const logEntry = {
     time: now.toISOString(),
-    email: email,
-    ip: ip,
-    userAgent: userAgent
+    email,
+    ip,
+    userAgent
   };
 
   opens.push(logEntry);
-  console.log(logEntry);
+  console.log('📩 Email opened:', logEntry);
 
   res.writeHead(200, {
     'Content-Type': 'image/png',
@@ -35,14 +35,14 @@ app.get('/track', (req, res) => {
   res.end(pixel);
 });
 
-// Dashboard endpoint
+// Dashboard route
 app.get('/', (req, res) => {
   let html = `
     <h1>📈 Email Open Tracking Dashboard</h1>
-    <table border="1" cellpadding="5" cellspacing="0">
+    <table border="1" cellspacing="0" cellpadding="5">
       <tr>
         <th>Email</th>
-        <th>Time</th>
+        <th>Opened At</th>
         <th>IP Address</th>
         <th>User Agent</th>
       </tr>`;
@@ -63,5 +63,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
