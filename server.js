@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Memory to store all opens
+// Store email opens in memory
 const opens = [];
 
 // 1x1 transparent pixel
@@ -11,7 +11,7 @@ const pixel = Buffer.from(
   'base64'
 );
 
-// Tracking route
+// Tracking endpoint
 app.get('/track', (req, res) => {
   const now = new Date();
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -35,7 +35,7 @@ app.get('/track', (req, res) => {
   res.end(pixel);
 });
 
-// Dashboard route
+// Dashboard endpoint
 app.get('/', (req, res) => {
   let html = `
     <h1>📈 Email Open Tracking Dashboard</h1>
